@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Deployment LMS BKPSDM Pasuruan - VPS Ubuntu 24.04 LTS</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 15mm 14mm 18mm 14mm;
+            @bottom-right {
+                content: "Halaman " counter(page);
+                font-size: 8pt;
+                color: #64748b;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            @bottom-left {
+                content: "LMS BKPSDM Kab. Pasuruan • Panduan Deployment Ubuntu 24.04 LTS";
+                font-size: 8pt;
+                color: #64748b;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+        }
+
+        *, *:before, *:after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            line-height: 1.55;
+            font-size: 9.5pt;
+            background: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Cover / Header Section */
+        .doc-header {
+            background: linear-gradient(135deg, #071f33 0%, #0b2e4b 60%, #1d6fa5 100%);
+            color: #ffffff;
+            padding: 24px 28px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 15px rgba(11, 46, 75, 0.15);
+        }
+
+        .doc-badge {
+            display: inline-block;
+            background-color: #f59e0b;
+            color: #071f33;
+            font-weight: 800;
+            font-size: 7.5pt;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .doc-title {
+            font-size: 18pt;
+            font-weight: 800;
+            line-height: 1.25;
+            margin: 0 0 6px 0;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+        }
+
+        .doc-subtitle {
+            font-size: 11pt;
+            color: #93c5fd;
+            margin: 0 0 16px 0;
+            font-weight: 500;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 8pt;
+        }
+
+        .meta-item strong {
+            display: block;
+            color: #cbd5e1;
+            font-size: 7pt;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .meta-item span {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        /* Typography & Layout */
+        h2 {
+            font-size: 12.5pt;
+            font-weight: 800;
+            color: #0b2e4b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            page-break-after: avoid;
+        }
+
+        .step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0b2e4b;
+            color: #ffffff;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            font-size: 8.5pt;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        h3 {
+            font-size: 10.5pt;
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            page-break-after: avoid;
+        }
+
+        p {
+            margin: 0 0 8px 0;
+            color: #334155;
+        }
+
+        ul, ol {
+            margin: 0 0 10px 0;
+            padding-left: 20px;
+            color: #334155;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        strong {
+            color: #0f172a;
+        }
+
+        /* Code Blocks & Terminal */
+        pre {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: Consolas, "Fira Code", Monaco, monospace;
+            font-size: 8.2pt;
+            line-height: 1.45;
+            overflow-x: auto;
+            margin: 6px 0 10px 0;
+            border: 1px solid #1e293b;
+            page-break-inside: avoid;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        code {
+            font-family: Consolas, Monaco, monospace;
+            font-size: 8.5pt;
+            background-color: #f1f5f9;
+            color: #0f3d62;
+            padding: 1.5px 5px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border: none;
+            font-size: inherit;
+        }
+
+        .cmd-comment {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .cmd-kw {
+            color: #38bdf8;
+            font-weight: bold;
+        }
+
+        .cmd-str {
+            color: #a3e635;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 10px 0;
+            font-size: 8.8pt;
+            page-break-inside: avoid;
+        }
+
+        .callout-info {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0284c7;
+            color: #0369a1;
+        }
+
+        .callout-info strong {
+            color: #075985;
+        }
+
+        .callout-warning {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            color: #b45309;
+        }
+
+        .callout-warning strong {
+            color: #92400e;
+        }
+
+        .callout-success {
+            background-color: #f0fdf4;
+            border-left: 4px solid #10b981;
+            color: #047857;
+        }
+
+        .callout-success strong {
+            color: #065f46;
+        }
+
+        /* Architecture Grid */
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 12px 0 16px 0;
+            page-break-inside: avoid;
+        }
+
+        .arch-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 9px 12px;
+            border-top: 3px solid #0b2e4b;
+        }
+
+        .arch-card strong {
+            display: block;
+            font-size: 8.8pt;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+
+        .arch-card span {
+            font-size: 7.8pt;
+            color: #64748b;
+            line-height: 1.35;
+            display: block;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 8.5pt;
+            page-break-inside: avoid;
+        }
+
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 9px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .footer-note {
+            margin-top: 30px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            font-size: 8pt;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== COVER / HEADER ==================== -->
+    <div class="doc-header">
+        <span class="doc-badge">Dokumentasi Resmi & Panduan Teknis</span>
+        <h1 class="doc-title">PANDUAN LENGKAP DEPLOYMENT SERVER PRODUKSI</h1>
+        <div class="doc-subtitle">Aplikasi LMS (Learning Management System) & E-Sertifikat TTE Terintegrasi</div>
+
+        <div class="meta-grid">
+            <div class="meta-item">
+                <strong>Instansi Pengelola</strong>
+                <span>BKPSDM Kab. Pasuruan</span>
+            </div>
+            <div class="meta-item">
+                <strong>Sistem Operasi Target</strong>
+                <span>Ubuntu 24.04.5 LTS (Noble)</span>
+            </div>
+            <div class="meta-item">
+                <strong>Framework & Bahasa</strong>
+                <span>Laravel 12 • PHP 8.3-FPM</span>
+            </div>
+            <div class="meta-item">
+                <strong>Web Server & Database</strong>
+                <span>Nginx • MySQL 8.0 • SSL</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ARSITEKTUR SISTEM ==================== -->
+    <div class="callout callout-info">
+        <strong>Konsep Sederhana Arsitektur Server:</strong> Agar mudah dipahami, server VPS ini diibaratkan seperti restoran: <strong>Nginx</strong> bertindak sebagai resepsionis pintu utama, <strong>PHP 8.3-FPM</strong> sebagai koki yang memproses program, <strong>MySQL</strong> sebagai gudang bahan data, dan <strong>Supervisor</strong> sebagai mandor yang menjaga antrean email Google berjalan stabil 24 jam non-stop di latar belakang.
+    </div>
+
+    <div class="arch-grid">
+        <div class="arch-card" style="border-top-color: #0284c7;">
+            <strong>1. Nginx Web Server</strong>
+            <span>Menerima lalu lintas HTTP/HTTPS dari internet, menangani berkas statis, dan mengarahkan permintaan ke PHP-FPM.</span>
+        </div>
+        <div class="arch-card" style="border-top-color: #10b981;">
+            <strong>2. PHP 8.3 & Composer</strong>
+            <span>Menjalankan *core framework* Laravel 12, memproses logika kuis, presensi, sertifikat PDF, dan migrasi database.</span>
+        </div>
+        <div class="arch-card" style="border-top-color: #f59e0b;">
+            <strong>3. MySQL Database</strong>
+            <span>Menyimpan master data pengguna, kurikulum, logbook kepemimpinan, koordinat blanko, dan transaksi sertifikat.</span>
+        </div>
+        <div class="arch-card" style="border-top-color: #8b5cf6;">
+            <strong>4. Supervisor Queue Worker</strong>
+            <span>Memproses antrean pengiriman email token/sertifikat di latar belakang sesuai batasan kuota email Google gratis.</span>
+        </div>
+        <div class="arch-card" style="border-top-color: #ec4899;">
+            <strong>5. Node.js 20 & Vite</strong>
+            <span>Melakukan *build* dan kompilasi terhadap pustaka antarmuka pengguna (Tailwind CSS 4 & Alpine.js).</span>
+        </div>
+        <div class="arch-card" style="border-top-color: #14b8a6;">
+            <strong>6. Let's Encrypt (Certbot)</strong>
+            <span>Menyediakan sertifikat enkripsi SSL HTTPS gratis yang diperpanjang otomatis demi keamanan data pegawai.</span>
+        </div>
+    </div>
+
+    <!-- ==================== LANGKAH 1 ==================== -->
+    <h2><span class="step-num">1</span> Akses VPS & Pembaruan Sistem Ubuntu</h2>
+    <p>Buka terminal di komputer Anda (PowerShell di Windows atau Terminal di MacOS/Linux), lalu login ke VPS menggunakan akun <code>root</code> atau user sudo:</p>
+
+<pre><span class="cmd-comment"># Masuk ke server VPS melalui SSH</span>
+ssh root@IP_VPS_ANDA
+
+<span class="cmd-comment"># Perbarui katalog paket dan perbarui seluruh sistem ke versi keamanan terbaru</span>
+sudo apt update && sudo apt upgrade -y
+
+<span class="cmd-comment"># Atur zona waktu server ke Waktu Indonesia Barat (WIB) agar jam sertifikat & presensi akurat</span>
+sudo timedatectl set-timezone Asia/Jakarta</pre>
+
+    <!-- ==================== LANGKAH 2 ==================== -->
+    <h2><span class="step-num">2</span> Instalasi Web Server Nginx & PHP 8.3 Lengkap</h2>
+    <p>Ubuntu 24.04 LTS secara bawaan sudah menyediakan PHP 8.3 di repositori resminya. Pasang Nginx bersama seluruh ekstensi PHP yang wajib digunakan oleh Laravel 12 dan fitur olah dokumen Excel/PDF:</p>
+
+<pre><span class="cmd-comment"># 1. Pasang Nginx, Git, Unzip, dan Firewall UFW</span>
+sudo apt install -y nginx git curl unzip ufw
+
+<span class="cmd-comment"># 2. Pasang PHP 8.3-FPM beserta pustaka pendukungnya</span>
+sudo apt install -y php8.3-fpm php8.3-cli php8.3-mysql php8.3-common php8.3-mbstring \
+php8.3-xml php8.3-bcmath php8.3-curl php8.3-gd php8.3-zip php8.3-intl</pre>
+
+    <h3>Konfigurasi Batas Upload File di PHP (Penting untuk Blanko & Materi)</h3>
+    <p>Buka file konfigurasi PHP-FPM dengan teks editor nano:</p>
+<pre>sudo nano /etc/php/8.3/fpm/php.ini</pre>
+    <p>Tekan <code>Ctrl + W</code> untuk mencari baris berikut, lalu sesuaikan nilainya menjadi:</p>
+<pre>upload_max_filesize = 50M
+post_max_size = 50M
+memory_limit = 256M
+max_execution_time = 300</pre>
+    <p>Simpan perubahan dengan menekan <code>Ctrl + O</code>, lalu <code>Enter</code>, dan keluar dengan <code>Ctrl + X</code>. Setelah itu restart PHP-FPM:</p>
+<pre>sudo systemctl restart php8.3-fpm</pre>
+
+    <!-- ==================== LANGKAH 3 ==================== -->
+    <h2><span class="step-num">3</span> Instalasi & Pembuatan Database MySQL</h2>
+    <p>Pasang database server MySQL dan buat database khusus aplikasi LMS:</p>
+
+<pre><span class="cmd-comment"># Pasang MySQL Server</span>
+sudo apt install -y mysql-server
+
+<span class="cmd-comment"># Jalankan panduan pengamanan awal MySQL (opsional)</span>
+sudo mysql_secure_installation
+
+<span class="cmd-comment"># Masuk ke konsol MySQL</span>
+sudo mysql</pre>
+
+    <p>Jalankan perintah SQL berikut di dalam prompt <code>mysql&gt;</code>:</p>
+<pre><span class="cmd-kw">CREATE DATABASE</span> lms_pasuruan <span class="cmd-kw">CHARACTER SET</span> utf8mb4 <span class="cmd-kw">COLLATE</span> utf8mb4_unicode_ci;
+<span class="cmd-kw">CREATE USER</span> <span class="cmd-str">'user_lms'</span>@<span class="cmd-str">'localhost'</span> <span class="cmd-kw">IDENTIFIED BY</span> <span class="cmd-str">'PasswordKuatLMS2026!'</span>;
+<span class="cmd-kw">GRANT ALL PRIVILEGES ON</span> lms_pasuruan.* <span class="cmd-kw">TO</span> <span class="cmd-str">'user_lms'</span>@<span class="cmd-str">'localhost'</span>;
+<span class="cmd-kw">FLUSH PRIVILEGES</span>;
+<span class="cmd-kw">EXIT</span>;</pre>
+
+    <div class="callout callout-warning">
+        <strong>Catatan Keamanan:</strong> Gantilah kata sandi <code>PasswordKuatLMS2026!</code> dengan kata sandi yang aman dan simpan untuk diisikan ke file <code>.env</code> nanti.
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ==================== LANGKAH 4 ==================== -->
+    <h2><span class="step-num">4</span> Instalasi Composer & Node.js 20 LTS</h2>
+    <p>Aplikasi ini membutuhkan <strong>Composer</strong> untuk pustaka PHP dan <strong>Node.js</strong> untuk kompilasi aset frontend:</p>
+
+<pre><span class="cmd-comment"># 1. Unduh dan pasang Composer secara global</span>
+curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer
+sudo chmod +x /usr/local/bin/composer
+
+<span class="cmd-comment"># 2. Pasang Node.js 20 LTS (NodeSource Repository)</span>
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+<span class="cmd-comment"># 3. Verifikasi instalasi</span>
+composer -V
+node -v && npm -v</pre>
+
+    <!-- ==================== LANGKAH 5 ==================== -->
+    <h2><span class="step-num">5</span> Penempatan Source Code Project ke VPS</h2>
+    <p>Direktori standar aplikasi web di Ubuntu adalah <code>/var/www/lms-pasuruan</code>. Anda dapat memilih salah satu dari dua cara berikut:</p>
+
+    <h3>Metode A: Melalui Git (Sangat Direkomendasikan)</h3>
+<pre>cd /var/www
+sudo git clone https://github.com/username-anda/lms-pasuruan.git lms-pasuruan</pre>
+
+    <h3>Metode B: Upload Manual via FileZilla / WinSCP (SFTP)</h3>
+    <ol>
+        <li>Kompres folder project Anda di komputer menjadi file <code>lms-project.zip</code> (Kecualikan folder <code>vendor</code>, <code>node_modules</code>, dan file <code>.env</code>).</li>
+        <li>Hubungkan FileZilla ke IP VPS dengan port SSH <code>22</code>.</li>
+        <li>Upload file zip ke folder <code>/var/www/</code>, lalu ekstrak:</li>
+    </ol>
+<pre>cd /var/www
+sudo unzip lms-project.zip -d lms-pasuruan</pre>
+
+    <!-- ==================== LANGKAH 6 ==================== -->
+    <h2><span class="step-num">6</span> Konfigurasi Lingkungan (.env), Database & Storage</h2>
+    <p>Masuk ke dalam folder project dan siapkan file konfigurasi environment:</p>
+
+<pre>cd /var/www/lms-pasuruan
+
+<span class="cmd-comment"># Salin template environment</span>
+sudo cp .env.example .env
+
+<span class="cmd-comment"># Edit file .env</span>
+sudo nano .env</pre>
+
+    <p>Sesuaikan nilai-nilai parameter produksi di dalam file <code>.env</code>:</p>
+<pre>APP_NAME="LMS Kabupaten Pasuruan"
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://nama-domain-anda.go.id
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=lms_pasuruan
+DB_USERNAME=user_lms
+DB_PASSWORD=PasswordKuatLMS2026!
+
+QUEUE_CONNECTION=database
+FILESYSTEM_DISK=public
+
+<span class="cmd-comment"># Konfigurasi SMTP Email Google (App Password 16 Karakter)</span>
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=emailanda@gmail.com
+MAIL_PASSWORD=xxxx-xxxx-xxxx-xxxx
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="emailanda@gmail.com"
+MAIL_FROM_NAME="${APP_NAME}"</pre>
+
+    <h3>Jalankan Perintah Inisialisasi Laravel:</h3>
+<pre><span class="cmd-comment"># 1. Pasang paket pustaka vendor PHP produksi</span>
+composer install --no-dev --optimize-autoloader
+
+<span class="cmd-comment"># 2. Buat App Key enkripsi unik</span>
+php artisan key:generate
+
+<span class="cmd-comment"># 3. Buat tautan simbolik folder penyimpanan berkas publik</span>
+php artisan storage:link
+
+<span class="cmd-comment"># 4. Jalankan migrasi tabel database</span>
+php artisan migrate --force
+
+<span class="cmd-comment"># 5. Kompilasi aset CSS Tailwind & Alpine.js</span>
+npm install
+npm run build
+
+<span class="cmd-comment"># 6. Atur hak kepemilikan direktori ke user web server www-data</span>
+sudo chown -R www-data:www-data /var/www/lms-pasuruan
+sudo chmod -R 775 /var/www/lms-pasuruan/storage
+sudo chmod -R 775 /var/www/lms-pasuruan/bootstrap/cache
+
+<span class="cmd-comment"># 7. Aktifkan cache konfigurasi dan rute agar aplikasi berjalan secepat kilat</span>
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache</pre>
+
+    <div class="page-break"></div>
+
+    <!-- ==================== LANGKAH 7 ==================== -->
+    <h2><span class="step-num">7</span> Konfigurasi Virtual Host Nginx</h2>
+    <p>Buat file konfigurasi situs baru di Nginx:</p>
+<pre>sudo nano /etc/nginx/sites-available/lms-pasuruan</pre>
+
+    <p>Salin dan tempelkan konfigurasi server block berikut (pastikan <code>root</code> mengarah ke folder <code>/public</code>):</p>
+<pre>server {
+    listen 80;
+    listen [::]:80;
+    server_name nama-domain-anda.go.id www.nama-domain-anda.go.id; <span class="cmd-comment"># Ganti dengan domain/IP Anda</span>
+
+    root /var/www/lms-pasuruan/public;
+    index index.php index.html;
+
+    client_max_body_size 50M;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}</pre>
+
+    <p>Aktifkan situs tersebut dan matikan konfigurasi bawaan Nginx:</p>
+<pre><span class="cmd-comment"># Buat symlink untuk mengaktifkan situs</span>
+sudo ln -s /etc/nginx/sites-available/lms-pasuruan /etc/nginx/sites-enabled/
+
+<span class="cmd-comment"># Hapus konfigurasi default Nginx</span>
+sudo rm -f /etc/nginx/sites-enabled/default
+
+<span class="cmd-comment"># Uji apakah ada kesalahan sintaks</span>
+sudo nginx -t
+
+<span class="cmd-comment"># Muat ulang konfigurasi Nginx</span>
+sudo systemctl reload nginx</pre>
+
+    <!-- ==================== LANGKAH 8 ==================== -->
+    <h2><span class="step-num">8</span> Setup Supervisor (Antrean Email) & Scheduler Cron</h2>
+    <div class="callout callout-warning">
+        <strong>Mengapa Supervisor Wajib?</strong> Karena sistem email memakai antrean database (antrean Google Mail gratis), jika server ditutup proses antrean akan mati tanpa Supervisor. Supervisor memastikan worker berjalan otomatis dan hidup kembali jika crash.
+    </div>
+
+<pre><span class="cmd-comment"># 1. Pasang Supervisor</span>
+sudo apt install -y supervisor
+
+<span class="cmd-comment"># 2. Buat file konfigurasi worker</span>
+sudo nano /etc/supervisor/conf.d/lms-worker.conf</pre>
+
+    <p>Masukkan konfigurasi berikut:</p>
+<pre>[program:lms-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/lms-pasuruan/artisan queue:work database --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/var/www/lms-pasuruan/storage/logs/worker.log
+stopwaitsecs=3600</pre>
+
+    <p>Muat dan aktifkan worker Supervisor:</p>
+<pre>sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl start lms-worker:*
+
+<span class="cmd-comment"># Periksa status worker (harus bertuliskan RUNNING)</span>
+sudo supervisorctl status</pre>
+
+    <h3>Pasang Cron Job Otomatis Laravel:</h3>
+<pre><span class="cmd-comment"># Buka editor cron milik user www-data</span>
+sudo crontab -e -u www-data</pre>
+    <p>Tambahkan baris berikut di baris paling bawah:</p>
+<pre>* * * * * cd /var/www/lms-pasuruan && php artisan schedule:run >> /dev/null 2>&1</pre>
+
+    <!-- ==================== LANGKAH 9 ==================== -->
+    <h2><span class="step-num">9</span> Pasang Sertifikat SSL HTTPS Gratis (Certbot)</h2>
+    <p>Setelah nama domain diarahkan (*A Record*) ke IP publik VPS Anda, pasang sertifikat SSL resmi agar website memiliki gembok hijau aman:</p>
+
+<pre><span class="cmd-comment"># 1. Buka port HTTP dan HTTPS di Firewall</span>
+sudo ufw allow 'Nginx Full'
+sudo ufw allow OpenSSH
+sudo ufw --force enable
+
+<span class="cmd-comment"># 2. Pasang Certbot untuk Nginx</span>
+sudo apt install -y certbot python3-certbot-nginx
+
+<span class="cmd-comment"># 3. Jalankan sertifikasi SSL otomatis</span>
+sudo certbot --nginx -d nama-domain-anda.go.id -d www.nama-domain-anda.go.id</pre>
+
+    <!-- ==================== CHEAT SHEET UPDATE ==================== -->
+    <h2><span class="step-num">10</span> Panduan Cepat Update Kode Aplikasi di Masa Depan</h2>
+    <p>Jika di kemudian hari ada pembaruan fitur atau perbaikan kode, Anda cukup menjalankan 6 perintah cepat ini di server:</p>
+
+<pre>cd /var/www/lms-pasuruan
+git pull origin main
+composer install --no-dev --optimize-autoloader
+npm run build
+php artisan migrate --force
+php artisan optimize:clear && php artisan optimize
+sudo supervisorctl restart lms-worker:*</pre>
+
+    <div class="footer-note">
+        Dokumen Panduan Teknis Deployment LMS • Badan Kepegawaian dan Pengembangan Sumber Daya Manusia (BKPSDM) Kabupaten Pasuruan • Dicetak Resmi untuk Server Produksi Ubuntu 24.04 LTS
+    </div>
+
+</body>
+</html>
